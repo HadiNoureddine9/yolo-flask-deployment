@@ -1,61 +1,233 @@
+# YOLO Object Detection Flask App 🚀
 
-# YOLO Object Detection — Flask + Docker
+A modern, containerized web application for real-time object detection using YOLOv5 and Flask. Upload images and get instant object detection results with bounding boxes and confidence scores.
 
-Minimal web app to serve a YOLOv5 model with Flask. Upload an image, get predictions drawn on the image.
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![YOLOv5](https://img.shields.io/badge/YOLOv5-FF6B35?style=for-the-badge&logo=ultralytics&logoColor=white)
 
-## 1) Place your model
-Put your trained weights at: `weights/best.pt`
+## ✨ Features
 
-## 2) Run with Docker (recommended)
+- 🖼️ **Image Upload**: Support for multiple image formats (JPG, PNG, BMP, GIF, WEBP)
+- 🔍 **Real-time Detection**: Instant object detection with YOLOv5
+- 🎯 **Bounding Boxes**: Visual detection results with confidence scores
+- 🐳 **Docker Ready**: Complete containerization with optimized Docker setup
+- 🚀 **Production Ready**: Gunicorn WSGI server for production deployment
+- 📱 **Responsive UI**: Clean, modern web interface
+- ⚡ **Fast Inference**: Optimized for quick processing
+- 🔧 **Configurable**: Environment-based configuration for different deployments
 
-```bash
-docker build -t yolo-app .
-docker run -p 5000:5000 yolo-app
-# Open http://localhost:5000
+## 🏗️ Architecture
+
+```
+├── app.py                 # Flask application
+├── requirements.txt       # Python dependencies
+├── Dockerfile            # Docker configuration
+├── templates/            # HTML templates
+│   ├── index.html        # Upload interface
+│   └── result.html       # Results display
+├── static/               # Static assets
+├── uploads/              # Uploaded images (ignored)
+├── yolov5/               # YOLOv5 repository
+└── weights/              # Model weights
+    └── best.pt           # Your trained model
 ```
 
-The Docker image clones the YOLOv5 repo and installs its requirements (PyTorch, OpenCV, etc.).
-No internet is required at runtime.
+## 🚀 Quick Start
 
-## 3) Local (without Docker)
-> Requires Python 3.10+
+### Using Docker (Recommended)
 
 ```bash
+# Clone the repository
+git clone https://github.com/HadiNoureddine9/yolo-flask-deployment.git
+cd yolo-flask-deployment
+
+# Place your trained model weights
+cp your-model.pt weights/best.pt
+
+# Build and run with Docker
+docker build -t yolo-detection .
+docker run -p 5000:5000 yolo-detection
+```
+
+Open [http://localhost:5000](http://localhost:5000) in your browser!
+
+### Local Development
+
+```bash
+# Install dependencies
 pip install -r requirements.txt
+
+# Clone YOLOv5
 git clone https://github.com/ultralytics/yolov5
 pip install -r yolov5/requirements.txt
+
+# Set environment variables
 export MODEL_PATH=weights/best.pt
 export YOLOV5_DIR=yolov5
+
+# Run the application
 python app.py
 ```
 
-Then open `http://127.0.0.1:5000`
+## 🔧 Configuration
 
-## 4) Deploy (two easy options)
+| Environment Variable | Default | Description |
+|---------------------|---------|-------------|
+| `MODEL_PATH` | `weights/best.pt` | Path to YOLOv5 model weights |
+| `YOLOV5_DIR` | `yolov5` | Path to YOLOv5 repository |
+| `PORT` | `5000` | Server port |
+| `SECRET_KEY` | `dev-secret-change-me` | Flask secret key |
 
-### Option A — Hugging Face Spaces (Docker)
-- Create a new Space → SDK: **Docker**
-- Upload all files (including `weights/best.pt` into `weights/`)
-- The build uses the provided `Dockerfile`
+## 📡 API Endpoints
 
-### Option B — Render (Docker)
-- Push this folder to a GitHub repo
-- Create a **Web Service** from the repo (Docker)
-- Free instance is fine. Ensure `weights/best.pt` exists in the repo (or download it during build).
+### Web Interface
+- `GET /` - Upload form
+- `POST /` - Process uploaded image
+- `GET /result` - Display detection results
 
-⚠️ If your weights are large, consider Git LFS or uploading them directly to the host (Spaces lets you upload via UI).
+### Static Files
+- `/uploads/<filename>` - Access uploaded images
+- `/static/<path>` - Access static assets
 
-## 5) Deliverables (per challenge)
-- **Model File(s):** `weights/best.pt` (and any tokenizer/config if needed)
-- **Flask App Files:** `app.py`, `templates/`, `static/`, any utils
-- **Dockerization:** `requirements.txt`, `Dockerfile`
-- **Deployment Link:** public URL (Render / HF Spaces / Railway / Fly.io)
-- **Slides Link:** add your link inside `slides_link.txt`
+## 🐳 Docker Deployment
 
-## 6) Notes
-- `app.py` loads YOLO from local `yolov5` repo inside Docker to avoid runtime internet.
-- If you need a different model path, set `MODEL_PATH` env var.
-- For JSON API instead of HTML, add an `/api/predict` route and return boxes/scores.
+### Build Options
+
+```bash
+# Basic build
+docker build -t yolo-app .
+
+# Build with custom model path
+docker build -t yolo-app --build-arg MODEL_PATH=custom-model.pt .
+
+# Run with custom port
+docker run -p 8080:5000 yolo-app
+
+# Run with GPU support (if available)
+docker run --gpus all -p 5000:5000 yolo-app
+```
+
+### Production Deployment
+
+The app includes Gunicorn for production serving:
+
+```dockerfile
+CMD ["gunicorn", "-w", "2", "-k", "gthread", "-b", "0.0.0.0:5000", "app:app"]
+```
+
+## 🌐 Cloud Deployment
+
+### Hugging Face Spaces
+1. Create new Space → SDK: **Docker**
+2. Upload all files including `weights/best.pt`
+3. Spaces will automatically build using the Dockerfile
+
+### Render
+1. Connect your GitHub repository
+2. Create **Web Service** from Docker
+3. Free tier works perfectly!
+
+### Railway / Fly.io
+1. Connect repository
+2. Automatic Docker deployment
+3. Set environment variables in dashboard
+
+## 📋 Requirements
+
+- **Python**: 3.10 or higher
+- **Docker**: For containerized deployment
+- **Model**: YOLOv5 compatible weights file
+- **Storage**: ~500MB for YOLOv5 dependencies
+
+## 🔍 Model Configuration
+
+Place your trained YOLOv5 model at:
+```
+weights/best.pt
+```
+
+The app automatically detects and loads the model on startup. For custom model paths, set the `MODEL_PATH` environment variable.
+
+## 🎨 UI Features
+
+- **Clean Interface**: Minimalist design with modern CSS
+- **File Validation**: Client-side format checking
+- **Responsive Design**: Works on desktop and mobile
+- **Real-time Feedback**: Upload progress and error handling
+
+## 🛠️ Development
+
+### Project Structure
+```
+yolo-flask-deploy/
+├── app.py              # Main Flask application
+├── requirements.txt    # Python dependencies
+├── Dockerfile         # Docker configuration
+├── templates/         # Jinja2 templates
+├── static/            # CSS, JS, images
+├── weights/           # Model weights directory
+├── uploads/           # Temporary upload storage
+└── yolov5/            # YOLOv5 framework
+```
+
+### Adding New Features
+
+1. **API Endpoints**: Add routes in `app.py`
+2. **UI Changes**: Modify templates in `templates/`
+3. **Styling**: Update CSS in template `<style>` tags
+4. **Model Changes**: Update `MODEL_PATH` configuration
+
+## 📝 API Usage Example
+
+```python
+import requests
+
+# Upload image for detection
+with open('image.jpg', 'rb') as f:
+    response = requests.post('http://localhost:5000/',
+                           files={'file': f})
+
+# Results will be displayed in the web interface
+```
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+1. **Model not found**: Ensure `weights/best.pt` exists
+2. **Port already in use**: Change port with `-p 8080:5000`
+3. **Memory issues**: Reduce image size or use smaller model
+4. **GPU not detected**: Install CUDA drivers for GPU support
+
+### Debug Mode
+
+```bash
+# Run with debug logging
+docker run -e DEBUG=1 -p 5000:5000 yolo-app
+```
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📞 Support
+
+- 📧 **Issues**: [GitHub Issues](https://github.com/HadiNoureddine9/yolo-flask-deployment/issues)
+- 📖 **Documentation**: This README
+- 🔧 **Updates**: Watch releases for new features
 
 ---
-**Extra Mile:** Polish your GitHub README with a GIF/screenshot and clear setup steps.
+
+**Built with ❤️ using Flask, YOLOv5, and Docker**
+
+*Star this repo if you find it helpful! ⭐*
