@@ -36,7 +36,7 @@ A modern, containerized web application for real-time object detection using YOL
 
 ## 🚀 Quick Start
 
-### Using Docker (Recommended)
+### Using Docker 
 
 ```bash
 # Clone the repository
