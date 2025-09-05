@@ -1,0 +1,29 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Detection Result</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; max-width: 1000px; margin: 40px auto; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    img { width: 100%; height: auto; border-radius: 12px; border: 1px solid #ddd; }
+    a { display:inline-block; margin-top:20px; }
+  </style>
+</head>
+<body>
+  <h1>Detection Result</h1>
+  <div class="grid">
+    <div>
+      <h3>Original</h3>
+      <img src="{{ input_url }}" alt="input"/>
+    </div>
+    <div>
+      <h3>Predictions</h3>
+      <img src="{{ output_url }}" alt="output"/>
+    </div>
+  </div>
+  <a href="{{ url_for('index') }}">← Try another image</a>
+</body>
+</html>

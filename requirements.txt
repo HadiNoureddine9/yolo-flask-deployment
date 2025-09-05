@@ -1,0 +1,6 @@
+
+flask
+gunicorn
+# You can optionally install torch/torchvision locally if not using Docker
+# torch
+# torchvision
