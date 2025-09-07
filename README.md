@@ -91,23 +91,6 @@ python app.py
 - `/uploads/<filename>` - Access uploaded images
 - `/static/<path>` - Access static assets
 
-## 🐳 Docker Deployment
-
-### Build Options
-
-```bash
-# Basic build
-docker build -t yolo-app .
-
-# Build with custom model path
-docker build -t yolo-app --build-arg MODEL_PATH=custom-model.pt .
-
-# Run with custom port
-docker run -p 8080:5000 yolo-app
-
-# Run with GPU support (if available)
-docker run --gpus all -p 5000:5000 yolo-app
-```
 
 ### Production Deployment
 
@@ -119,20 +102,9 @@ CMD ["gunicorn", "-w", "2", "-k", "gthread", "-b", "0.0.0.0:5000", "app:app"]
 
 ## 🌐 Cloud Deployment
 
-### Hugging Face Spaces
-1. Create new Space → SDK: **Docker**
-2. Upload all files including `weights/best.pt`
-3. Spaces will automatically build using the Dockerfile
+### Hugging Face Spaces Link:
+https://huggingface.co/spaces/hno123/yolo-flask-deployment
 
-### Render
-1. Connect your GitHub repository
-2. Create **Web Service** from Docker
-3. Free tier works perfectly!
-
-### Railway / Fly.io
-1. Connect repository
-2. Automatic Docker deployment
-3. Set environment variables in dashboard
 
 ## 📋 Requirements
 
@@ -143,7 +115,7 @@ CMD ["gunicorn", "-w", "2", "-k", "gthread", "-b", "0.0.0.0:5000", "app:app"]
 
 ## 🔍 Model Configuration
 
-Place your trained YOLOv5 model at:
+ trained YOLOv5 model at:
 ```
 weights/best.pt
 ```
@@ -170,26 +142,6 @@ yolo-flask-deploy/
 ├── weights/           # Model weights directory
 ├── uploads/           # Temporary upload storage
 └── yolov5/            # YOLOv5 framework
-```
-
-### Adding New Features
-
-1. **API Endpoints**: Add routes in `app.py`
-2. **UI Changes**: Modify templates in `templates/`
-3. **Styling**: Update CSS in template `<style>` tags
-4. **Model Changes**: Update `MODEL_PATH` configuration
-
-## 📝 API Usage Example
-
-```python
-import requests
-
-# Upload image for detection
-with open('image.jpg', 'rb') as f:
-    response = requests.post('http://localhost:5000/',
-                           files={'file': f})
-
-# Results will be displayed in the web interface
 ```
 
 ## 🚨 Troubleshooting
